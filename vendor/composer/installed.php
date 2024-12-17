@@ -1,6 +1,6 @@
 <?php return array(
     'root' => array(
-        'name' => 'lokanesia/web-app',
+        'name' => 'lokanesia/web',
         'pretty_version' => '1.0.0+no-version-set',
         'version' => '1.0.0.0',
         'reference' => null,
@@ -28,7 +28,7 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'lokanesia/web-app' => array(
+        'lokanesia/web' => array(
             'pretty_version' => '1.0.0+no-version-set',
             'version' => '1.0.0.0',
             'reference' => null,

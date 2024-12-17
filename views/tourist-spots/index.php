@@ -21,12 +21,12 @@ try {
 
 // Category icons mapping
 $categoryIcons = [
-    'Alam' => 'fa-mountain',
-    'Budaya' => 'fa-landmark',
-    'Sejarah' => 'fa-monument',
-    'Hiburan' => 'fa-store',
-    'Kuliner' => 'fa-utensils',
-    'Religi' => 'fa-mosque'
+    'Wisata Alam' => 'fa-mountain',
+    'Wisata Budaya' => 'fa-landmark',
+    'Wisata Sejarah' => 'fa-monument',
+    'Wisata Hiburan' => 'fa-store',
+    'Wisata Kuliner' => 'fa-utensils',
+    'Wisata Religi' => 'fa-mosque'
 ];
 ?>
 
@@ -465,12 +465,12 @@ $categoryIcons = [
                     <div class="col-md-3">
                         <select class="form-select" id="category" name="category">
                             <option value="">Semua Kategori</option>
-                            <option value="Alam">Wisata Alam</option>
-                            <option value="Budaya">Wisata Budaya</option>
-                            <option value="Sejarah">Wisata Sejarah</option>
-                            <option value="Hiburan">Wisata Hiburan</option>
-                            <option value="Kuliner">Wisata Kuliner</option>
-                            <option value="Religi">Wisata Religi</option>
+                            <option value="Wisata Alam">Wisata Alam</option>
+                            <option value="Wisata Budaya">Wisata Budaya</option>
+                            <option value="Wisata Sejarah">Wisata Sejarah</option>
+                            <option value="Wisata Hiburan">Wisata Hiburan</option>
+                            <option value="Wisata Kuliner">Wisata Kuliner</option>
+                            <option value="Wisata Religi">Wisata Religi</option>
                         </select>
                     </div>
                     <div class="col-md-3">
@@ -531,7 +531,7 @@ $categoryIcons = [
                                                 <?php endif; ?>
                                             <?php endfor; ?>
                                         </div>
-                                        <span class="review-count">(<?php echo $spot->review_count; ?> ulasan)</span>
+                                        <span class="review-count">(<?php echo $spot->review_count ?? 0; ?> ulasan)</span>
                                     </div>
                                     <div class="spot-footer">
                                         <div class="spot-distance">

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Lokanesia
 
 Aplikasi web berbasis peta untuk menemukan tempat wisata lokal di Indonesia.
@@ -9,13 +8,39 @@ Lokanesia adalah platform yang membantu pengguna menemukan dan mengeksplorasi te
 
 ## Fitur Utama
 
-- Peta interaktif menggunakan OpenStreetMap
-- Pencarian tempat wisata dengan filter
+- Peta interaktif menggunakan Leaflet dan OpenStreetMap
+- Pencarian tempat wisata dengan filter:
+  - Berdasarkan kategori (Wisata Alam, Budaya, Sejarah, dll)
+  - Berdasarkan rentang harga tiket
+  - Berdasarkan rating pengunjung
+  - Berdasarkan lokasi
 - Sistem autentikasi pengguna
 - Manajemen rencana perjalanan
 - Ulasan dan rating tempat wisata
 - Navigasi ke lokasi wisata
 - Rekomendasi tempat wisata berdasarkan lokasi
+
+## Kategori Wisata
+
+- Wisata Alam (Pantai, Gunung, Danau, dll)
+- Wisata Budaya (Museum, Galeri Seni, dll)
+- Wisata Sejarah (Candi, Benteng, dll)
+- Wisata Hiburan (Taman Bermain, Pusat Perbelanjaan)
+- Wisata Kuliner (Pasar Tradisional, Pusat Kuliner)
+- Wisata Religi (Masjid, Pura, Gereja, dll)
+
+## Teknologi yang Digunakan
+
+- Backend: PHP 7.4+
+- Database: MongoDB 4.4+
+- Frontend: 
+  - Bootstrap 5.3
+  - Leaflet.js untuk peta interaktif
+  - Font Awesome untuk ikon
+  - jQuery untuk AJAX
+- API:
+  - OpenStreetMap untuk peta dasar
+  - OpenRouteService untuk navigasi
 
 ## Persyaratan Sistem
 
@@ -44,9 +69,23 @@ cp .env.example .env
 ```
 
 4. Sesuaikan konfigurasi di file .env:
-- Atur koneksi MongoDB
-- Tambahkan API key OpenRouteService
-- Sesuaikan konfigurasi aplikasi lainnya
+```env
+APP_NAME=Lokanesia
+APP_ENV=development
+APP_URL=http://localhost:8000
+
+# Database MongoDB
+MONGODB_URI=mongodb://localhost:27017
+MONGODB_DB=lokanesia_db
+
+# JWT untuk autentikasi
+JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRATION=86400
+
+# Konfigurasi Upload
+UPLOAD_MAX_SIZE=5242880
+ALLOWED_EXTENSIONS=jpg,jpeg,png,gif
+```
 
 5. Jalankan migrasi database:
 ```bash
@@ -58,16 +97,39 @@ php migrate.php
 chmod -R 775 public/uploads
 ```
 
-7. Arahkan web server ke direktori public sebagai document root
+7. Jalankan server development:
+```bash
+php -S localhost:8000 -t public public/router.php
+```
 
 ## Penggunaan
 
-1. Buka aplikasi melalui browser
+1. Buka aplikasi melalui browser: http://localhost:8000
 2. Daftar akun baru atau masuk dengan akun yang ada
-3. Mulai menjelajahi tempat wisata di Indonesia
-4. Gunakan fitur pencarian dan filter untuk menemukan tempat wisata
-5. Buat rencana perjalanan dan simpan tempat favorit
-6. Berikan ulasan dan rating untuk tempat yang telah dikunjungi
+3. Mulai menjelajahi tempat wisata di Indonesia:
+   - Gunakan fitur pencarian dengan filter kategori
+   - Lihat tempat wisata di peta interaktif
+   - Baca ulasan dari pengunjung lain
+   - Simpan tempat favorit
+   - Buat rencana perjalanan
+   - Berikan ulasan untuk tempat yang telah dikunjungi
+
+## Struktur Direktori
+
+```
+lokanesia/
+├── app/
+│   ├── Controllers/    # Controller aplikasi
+│   ├── Models/         # Model database
+│   └── Core/           # Kelas inti aplikasi
+├── config/            # File konfigurasi
+├── public/           # Direktori publik
+│   ├── assets/      # Asset statis (CSS, JS, gambar)
+│   └── uploads/     # Upload pengguna
+├── views/           # Template view
+├── routes/          # Definisi routing
+└── vendor/         # Dependensi composer
+```
 
 ## Kontribusi
 
@@ -79,7 +141,5 @@ Silakan berkontribusi dengan membuat pull request. Untuk perubahan besar, harap 
 
 ## Kontak
 
-Email: team@lokanesia.com 
-=======
-# lokanesia
->>>>>>> c15cf6410d0d2033aa3f6cbcf782be61fa16f464
+Email: team@lokanesia.com
+Website: https://lokanesia.com

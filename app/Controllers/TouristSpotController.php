@@ -218,61 +218,6 @@ class TouristSpotController extends Controller {
                         'image_url' => 'https://images.pexels.com/photos/784916/pexels-photo-784916.jpeg',
                         'operating_hours' => '10.00 - 20.00',
                         'created_at' => new UTCDateTime()
-                    ],
-                    [
-                        'name' => 'Gunung Bromo',
-                        'description' => 'Gunung berapi aktif dengan pemandangan matahari terbit yang menakjubkan',
-                        'category' => 'Wisata Alam',
-                        'address' => 'Probolinggo, Jawa Timur',
-                        'ticket_price' => 25000,
-                        'rating' => 4.7,
-                        'image_url' => 'https://images.pexels.com/photos/2166553/pexels-photo-2166553.jpeg',
-                        'operating_hours' => '24 jam',
-                        'created_at' => new UTCDateTime()
-                    ],
-                    [
-                        'name' => 'Museum Nasional',
-                        'description' => 'Museum yang menyimpan koleksi sejarah dan budaya Indonesia',
-                        'category' => 'Wisata Sejarah',
-                        'address' => 'Jakarta Pusat',
-                        'ticket_price' => 15000,
-                        'rating' => 4.3,
-                        'image_url' => 'https://images.pexels.com/photos/2161467/pexels-photo-2161467.jpeg',
-                        'operating_hours' => '08.00 - 16.00',
-                        'created_at' => new UTCDateTime()
-                    ],
-                    [
-                        'name' => 'Pasar Terapung',
-                        'description' => 'Pasar tradisional di atas air dengan perahu-perahu pedagang',
-                        'category' => 'Wisata Budaya',
-                        'address' => 'Banjarmasin, Kalimantan Selatan',
-                        'ticket_price' => 5000,
-                        'rating' => 4.4,
-                        'image_url' => 'https://images.pexels.com/photos/2166559/pexels-photo-2166559.jpeg',
-                        'operating_hours' => '06.00 - 11.00',
-                        'created_at' => new UTCDateTime()
-                    ],
-                    [
-                        'name' => 'Trans Studio Bandung',
-                        'description' => 'Taman hiburan indoor terbesar di Indonesia',
-                        'category' => 'Wisata Hiburan',
-                        'address' => 'Bandung, Jawa Barat',
-                        'ticket_price' => 150000,
-                        'rating' => 4.5,
-                        'image_url' => 'https://images.pexels.com/photos/784916/pexels-photo-784916.jpeg',
-                        'operating_hours' => '10.00 - 21.00',
-                        'created_at' => new UTCDateTime()
-                    ],
-                    [
-                        'name' => 'Raja Ampat',
-                        'description' => 'Surga diving dengan keindahan bawah laut yang menakjubkan',
-                        'category' => 'Wisata Alam',
-                        'address' => 'Papua Barat',
-                        'ticket_price' => 500000,
-                        'rating' => 4.9,
-                        'image_url' => 'https://images.pexels.com/photos/2440009/pexels-photo-2440009.jpeg',
-                        'operating_hours' => '24 jam',
-                        'created_at' => new UTCDateTime()
                     ]
                 ];
 
@@ -309,7 +254,12 @@ class TouristSpotController extends Controller {
 
             // Convert BSON to array
             $popularSpots = array_map(function($spot) {
-                return $this->convertBSONToArray($spot);
+                $spotArray = $this->convertBSONToArray($spot);
+                // Pastikan review_count selalu ada
+                if (!isset($spotArray['review_count'])) {
+                    $spotArray['review_count'] = 0;
+                }
+                return $spotArray;
             }, $popularSpots);
 
             // Get user data if logged in
@@ -524,7 +474,15 @@ class TouristSpotController extends Controller {
             $maxPrice = (int) $request->getQuery('maxPrice', PHP_INT_MAX);
             $minRating = (float) $request->getQuery('minRating', 0);
             
-            error_log("Raw search params - Query: '$query', Category: '$category', Price: $minPrice-$maxPrice, Rating: $minRating");
+            error_log("Search started with parameters:");
+            error_log("Query: " . $query);
+            error_log("Category: " . $category);
+            error_log("Price Range: " . $minPrice . "-" . $maxPrice);
+            error_log("Min Rating: " . $minRating);
+
+            // Debug: Tampilkan semua kategori yang ada di database
+            $availableCategories = $this->collection->distinct('category');
+            error_log("Available categories in database: " . json_encode($availableCategories));
 
             // Build search filter
             $filter = [];
@@ -538,12 +496,9 @@ class TouristSpotController extends Controller {
             }
             
             if (!empty($category)) {
-                // Debug: Cek kategori yang tersedia di database
-                $availableCategories = $this->collection->distinct('category');
-                error_log("Available categories in DB: " . json_encode($availableCategories));
-                error_log("Searching for category: '$category'");
-
-                $filter['category'] = new \MongoDB\BSON\Regex('^' . preg_quote($category) . '$', 'i');
+                // Ubah pencarian kategori menjadi case-insensitive
+                $filter['category'] = ['$regex' => '^' . preg_quote($category) . '$', '$options' => 'i'];
+                error_log("Category filter: " . json_encode($filter['category']));
             }
             
             if ($minPrice > 0 || $maxPrice < PHP_INT_MAX) {
@@ -560,24 +515,12 @@ class TouristSpotController extends Controller {
             error_log("Final search filter: " . json_encode($filter));
 
             // Execute search
-            $spots = $this->collection->find(
-                $filter,
-                [
-                    'sort' => ['rating' => -1],
-                    'limit' => 50
-                ]
-            )->toArray();
+            $spots = $this->collection->find($filter)->toArray();
+            error_log("Found " . count($spots) . " spots");
 
-            // Debug: Cek hasil pencarian
-            error_log("Raw search results count: " . count($spots));
-            if (count($spots) === 0) {
-                error_log("No results found with filter: " . json_encode($filter));
-                
-                // Debug: Coba cari semua dokumen dengan kategori yang sama
-                if (!empty($category)) {
-                    $allWithCategory = $this->collection->find(['category' => $category])->toArray();
-                    error_log("Total documents with category '$category': " . count($allWithCategory));
-                }
+            // Debug: Tampilkan beberapa data pertama yang ditemukan
+            if (count($spots) > 0) {
+                error_log("First spot found: " . json_encode($spots[0]));
             }
 
             // Convert BSON to array
@@ -585,16 +528,15 @@ class TouristSpotController extends Controller {
                 return $this->convertBSONToArray($spot);
             }, $spots);
 
-            error_log("Final results count: " . count($results));
-
             // Send JSON response
             $response->json([
                 'status' => 'success',
                 'data' => $results,
                 'debug' => [
                     'filter' => $filter,
-                    'availableCategories' => $availableCategories ?? [],
-                    'requestedCategory' => $category
+                    'availableCategories' => $availableCategories,
+                    'requestedCategory' => $category,
+                    'totalResults' => count($results)
                 ]
             ]);
 

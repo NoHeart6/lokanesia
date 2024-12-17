@@ -1,0 +1,10 @@
+/vendor/
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
+*.log
+/public/uploads/
+/node_modules/
+composer.lock 
