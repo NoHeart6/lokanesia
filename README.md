@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Lokanesia
 
 Aplikasi web berbasis peta untuk menemukan tempat wisata lokal di Indonesia.
@@ -143,3 +144,6 @@ Silakan berkontribusi dengan membuat pull request. Untuk perubahan besar, harap 
 
 Email: team@lokanesia.com
 Website: https://lokanesia.com
+=======
+# lokanesia
+>>>>>>> 8baec7d5e09d0af33f9ea50dae9db6896f8f831b
