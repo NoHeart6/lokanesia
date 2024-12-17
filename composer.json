@@ -1,0 +1,22 @@
+{
+    "name": "lokanesia/web",
+    "description": "Lokanesia Web Application",
+    "type": "project",
+    "require": {
+        "php": "^7.4|^8.0",
+        "mongodb/mongodb": "^1.15",
+        "ext-mongodb": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Lokanesia Team",
+            "email": "team@lokanesia.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}
